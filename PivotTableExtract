@@ -1,0 +1,191 @@
+Sub pivotsB()
+Dim a As Worksheet
+Dim k As Worksheet
+Dim b As PivotTable
+Dim c As Long
+Dim d As Long
+Dim e As String
+Dim f As PivotField
+Dim g As PivotField
+Dim h As PivotItem
+Dim i As Long
+Dim j As Long
+Dim m As Long
+Dim y As String
+Dim z As String
+Dim p As Long
+d = 1 ' left
+Application.ScreenUpdating = False
+Application.DisplayAlerts = False
+c = 1
+i = 1
+j = 1
+p = 1
+Sheets(1).Select
+With ActiveSheet
+For Each a In ActiveWorkbook.Worksheets
+For Each b In a.PivotTables
+.Cells(c, 1).Value = a.Index
+.Cells(c, 2).Value = b.CacheIndex
+.Cells(c, 3).Value = a.Name
+.Cells(c, 4).Value = b.Name
+.Cells(c, 5).Value = b.SourceData
+.Cells(c, 6).Value = b.TableRange1.Address
+.Cells(c, 7).Value = b.RefreshName & " (" & b.RefreshDate & ")"
+c = c + 1
+Next
+Next
+.Activate
+End With
+
+
+On Error Resume Next
+For n = 1 To c - 1
+Set a = Sheets(Cells(n, d))
+m = Cells(n, d + 1)
+Set b = a.PivotTables(m)
+Set k = Sheets(2)
+With k
+For Each f In b.PivotFields
+If f.Caption <> "Values" Then
+Select Case f.Orientation
+Case xlPageField
+e = "Page"
+End Select
+On Error Resume Next
+End If
+If e = "Page" Then
+.Cells(j, 1).Value = a.Name
+.Cells(j, 2).Value = b.Name
+.Cells(j, 3).Value = f.SourceName 'period
+.Cells(j, 4).Value = e
+
+.Cells(j, 5).Value = a.Index
+
+.Cells(j, 6).Value = b.CacheIndex
+.Cells(j, 7).Value = f.Position
+.Cells(j, 8).Value = f.VisibleItems.Count
+.Cells(j, 9).Value = f.VisibleItems(1).Name
+.Cells(j, 10).Value = f.PivotItems.Count
+.Cells(j, 11).Value = f.PivotItems(1).Name
+j = j + 1
+End If
+
+Next f
+End With
+Next n
+
+For n = 1 To c - 1
+Set a = Sheets(Cells(n, d))
+m = Cells(n, d + 1)
+Set b = a.PivotTables(m)
+Set k = Sheets(3)
+With k
+For Each f In b.PivotFields
+If f.Caption <> "Values" Then
+Select Case f.Orientation
+Case xlRowField
+e = "Row"
+End Select
+On Error Resume Next
+End If
+
+If e = "Row" Then
+
+.Cells(i, 1).Value = a.Name
+.Cells(i, 2).Value = b.Name
+.Cells(i, 3).Value = f.SourceName 'period
+.Cells(i, 4).Value = e
+
+.Cells(i, 5).Value = a.Index
+
+.Cells(i, 6).Value = b.CacheIndex
+.Cells(i, 7).Value = f.Position
+.Cells(i, 8).Value = f.VisibleItems.Count
+.Cells(i, 9).Value = f.VisibleItems(1).Name
+.Cells(i, 10).Value = f.PivotItems.Count
+.Cells(i, 11).Value = f.PivotItems(1).Name
+
+
+i = i + 1
+End If
+Next f
+End With
+Next n
+
+
+
+
+
+
+For n = 1 To c - 1
+Set a = Sheets(Cells(n, d))
+m = Cells(n, d + 1)
+Set b = a.PivotTables(m)
+
+Set k = Sheets(4)
+With k
+For Each f In b.PivotFields
+If f.Caption <> "Values" Then
+Select Case f.Orientation
+Case xlHidden
+e = "Hidden"
+Case xlRowField
+e = "Row"
+Case xlColumnField
+e = "Column"
+Case xlPageField
+e = "Page"
+Case xlDataField
+e = "Data"
+End Select
+If e = "Hidden" Then
+For Each g In b.DataFields
+If g.SourceName = f.SourceName Then
+e = "Data"
+Exit For
+End If
+Next g
+End If
+On Error Resume Next
+End If
+
+If e = "Data" Then
+
+.Cells(p, 1).Value = a.Name
+.Cells(p, 2).Value = b.Name
+.Cells(p, 3).Value = f.SourceName 'period
+.Cells(p, 4).Value = e
+.Cells(p, 5).Value = a.Index
+.Cells(p, 6).Value = b.CacheIndex
+.Cells(p, 7).Value = f.Position
+.Cells(p, 8).Value = f.VisibleItems.Count
+.Cells(p, 9).Value = f.VisibleItems(1).Name
+.Cells(p, 10).Value = f.PivotItems.Count
+.Cells(p, 11).Value = f.PivotItems(1).Name
+
+p = p + 1
+End If
+Next f
+End With
+Next n
+
+
+
+
+
+exitHandler:
+Application.DisplayAlerts = True
+Exit Sub
+errHandler:
+Resume exitHandler
+Application.ScreenUpdating = True
+ActiveWorkbook.Save
+'Application.Run "Sorting"
+
+Sheets(1).Select
+
+
+
+End Sub
+
